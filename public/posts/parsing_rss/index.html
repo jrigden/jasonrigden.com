@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="description" content="Independent software developer in Seattle.">
+
+
+<base href="https://jasonrigden.com">
+
+<title>Mr. Rigden&#39;s Blog</title>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+
+
+
+
+<link href="https://fonts.googleapis.com/css?family=Lato|Roboto|Roboto+Mono:500" rel="stylesheet">
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://jasonrigden.com/css/main.css">
+
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="theme-color" content="#ffffff">
+
+</head>
+<body lang="en-US">
+<div class="container">
+
+
+<header class="row text-left title">
+  <h1 class="title">Parsing RSS feeds with Python</h1>
+</header>
+<section id="category-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-left meta">
+      Posted by Jason Rigen  on January 23, 2016 
+    </h6>
+      
+      
+      
+
+      
+      
+      <h6  class="text-left meta">File under <a class="meta" href="/categories/tutorial">Tutorial</a></h6>
+      
+      
+      
+
+  </div>
+  
+</section>
+<section id="content-pane" class="row">
+  <div class="col-md-12 text-justify content">
+    
+
+<p>There are several option to parse RSS feeds for python. I wrote one of those options.</p>
+
+<p><a href="https://github.com/jrigden/pyPodcastParser"><strong>pyPodcastParser</strong></a> is a podcast parser. It should parse any XML RSS file, but it specializes in parsing podcast feeds. It does not parse ATOM feeds.</p>
+
+<h3 id="featuring"><strong>Featuring</strong></h3>
+
+<ul>
+<li><a href="https://travis-ci.org/jrigden/pyPodcastParser">Automated testing with Travis CI</a></li>
+<li><a href="https://coveralls.io/github/jrigden/pyPodcastParser?branch=master">100% test coverage as measured by Coveralls</a></li>
+<li><a href="https://opensource.org/licenses/MIT">An MIT license</a></li>
+<li>Compatibility with python 2 and python 3</li>
+<li><a href="https://pypi.python.org/pypi/pyPodcastParser">Available on pyi</a></li>
+<li>Support of RSS 2.0</li>
+<li>Support of iTunes podcast tags</li>
+<li>OS independent</li>
+</ul>
+
+<h3 id="installation">Installation</h3>
+
+<pre name="560a" id="560a" class="graf graf--pre graf-after--h3">pip install pyPodcastParser</pre>
+
+<h3 id="usage">Usage</h3>
+
+<pre name="89af" id="89af" class="graf graf--pre graf-after--h3">from pyPodcastParser.Podcast import Podcast  
+import requests  
+
+response = requests.get('https://some_rss_feed')  
+podcast = Podcast(response.content)</pre>
+
+<h3 id="objects-and-their-useful-attributes">Objects and their Useful Attributes</h3>
+
+<p><strong><em>Note:</em></strong></p>
+
+<p>All attributes with empty or nonexistent element will have a value of None.<em>All attributes with empty or nonexistent element will have a value of None.</em></p>
+
+<ul>
+<li><em>Attributes are generally strings or lists of strings, because we want to record the literal value of elements.</em></li>
+<li><em>The cloud element aka RSS Cloud is not supported as it has been superseded by the superior PubSubHubbub protocol</em></li>
+</ul>
+
+<h4 id="podcast">Podcast</h4>
+
+<ul>
+<li>categories (list) A list for strings representing the feed categories</li>
+<li>copyright (string): The feed’s copyright</li>
+<li>creative_commons (string): The feed’s creative commons license</li>
+<li>items (list): A list of Item objects</li>
+<li>description (string): The feed’s description</li>
+<li>generator (string): The feed’s generator</li>
+<li>image_title (string): Feed image title</li>
+<li>image_url (string): Feed image url</li>
+<li>image_link (string): Feed image link to homepage</li>
+<li>image_width (string): Feed image width</li>
+<li>image_height (Sample H4string): Feed image height</li>
+<li>itunes_author_name (string): The podcast’s author name for iTunes</li>
+<li>itunes_block (boolean): Does the podcast block itunes</li>
+<li>itunes_categories (list): List of strings of itunes categories</li>
+<li>itunes_complete (string): Is this podcast done and complete</li>
+<li>itunes_explicit (string): Is this item explicit. Should only be “yes” and “clean.”</li>
+<li>itune_image (string): URL to itunes image</li>
+<li>itunes_keywords (list): List of strings of itunes keywords</li>
+<li>itunes_new_feed_url (string): The new url of this podcast</li>
+<li>language (string): Language of feed</li>
+<li>last_build_date (string): Last build date of this feed</li>
+<li>link (string): URL to homepage</li>
+<li>managing_editor (string): managing editor of feed</li>
+<li>published_date (string): Date feed was published</li>
+<li>pubsubhubbub (string): The URL of the pubsubhubbub service for this feed</li>
+<li>owner_name (string): Name of feed owner</li>
+<li>owner_email (string): Email of feed owner</li>
+<li>subtitle (string): The feed subtitle</li>
+<li>title (string): The feed title</li>
+<li>ttl (string): The time to live or number of minutes to cache feed</li>
+<li>web_master (string): The feed’s webmaster</li>
+</ul>
+
+<h4 id="item">Item</h4>
+
+<ul>
+<li>author (string): The author of the item</li>
+<li>comments (string): URL of comments</li>
+<li>creative_commons (string): creative commons license for this item</li>
+<li>description (string): Description of the item.</li>
+<li>enclosure_url (string): URL of enclosure</li>
+<li>enclosure_type (string): File MIME type</li>
+<li>enclosure_length (integer): File size in bytes</li>
+<li>guid (string): globally unique identifier</li>
+<li>itunes_author_name (string): Author name given to iTunes</li>
+<li>itunes_block (boolean): It this Item blocked from itunes</li>
+<li>itunes_closed_captioned: (string): It is this item have closed captions</li>
+<li>itunes_duration (string): Duration of enclosure</li>
+<li>itunes_explicit (string): Is this item explicit. Should only be “yes” and “clean.”</li>
+<li>itune_image (string): URL of item cover art</li>
+<li>itunes_order (string): Override published_date order</li>
+<li>itunes_subtitle (string): The item subtitle</li>
+<li>itunes_summary (string): The summary of the item</li>
+<li>link (string): The URL of item.</li>
+<li>published_date (string): Date item was published</li>
+<li>title (string): The title of item.</li>
+</ul>
+
+<h3 id="bugs-feature-requests">Bugs &amp; Feature Requests</h3>
+
+<p>I would like your help to break pyPodcastParser. P<a href="https://github.com/jrigden/pyPodcastParser/issues/new">lease send me any bug reports</a>. I would also like to hear of your <a href="https://github.com/jrigden/pyPodcastParser/issues/new">feature requests</a>.</p>
+
+  </div>
+</section>
+<section id="tag-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-left meta">
+      
+      
+      
+      Tags:
+      
+      
+      <a class="meta" href="/tags/python">Python</a>, 
+      
+      <a class="meta" href="/tags/rss">RSS</a>
+      
+      
+      
+    </h6>
+
+  </div>
+  
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<section id="menu-pane" class="row menu text-center">
+
+
+  <h4 class="text-center">
+  
+  
+  
+  |
+  
+  
+  <span><a href="https://jasonrigden.com/posts/alexa_how_to/"> Newer <i class="fa fa-arrow-right" aria-hidden="true"></i></a></span>
+  
+  
+  </h4>
+
+
+
+
+
+
+</section>
+
+
+
+
+<h4 class="text-center"><a href="/">About</a> | <a href="/posts">Posts</a> | <a href="/posts/projects/">Projects</a></h4>
+<footer class="row text-center footer">
+  <h4>Mr. Rigden's Blog</h4>
+  
+  <h6 class="text-center copyright"><a href="https://creativecommons.org/licenses/by/4.0/">© 2017 Jason Rigden<br> CC BY 4.0</a></h6>
+  
+  
+</footer>
+
+</div>
+
+
+
+
+
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-108478531-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python on Mr. Rigden&#39;s Blog</title>
+    <link>https://jasonrigden.com/tags/python/</link>
+    <description>Recent content in Python on Mr. Rigden&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Sat, 05 Aug 2017 11:51:01 -0700</lastBuildDate>
+    
+	<atom:link href="https://jasonrigden.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>How to make an Alexa Skill with Python</title>
+      <link>https://jasonrigden.com/posts/alexa_how_to/</link>
+      <pubDate>Sat, 05 Aug 2017 11:51:01 -0700</pubDate>
+      
+      <guid>https://jasonrigden.com/posts/alexa_how_to/</guid>
+      <description>This guide will assume that you have already completed the Alexa Python Tutorial from Amazon. If you have done this then you should have a good handle on how to create new Alexa Skills and Lambda functions. But you probably still have no idea how to write code for an Alexa Skill. The code for “alexa-skills-kit-color-expert-python” is almost unreadable.
+This tutorial will show you a template with some nice clean readable code.</description>
+    </item>
+    
+    <item>
+      <title>Parsing RSS feeds with Python</title>
+      <link>https://jasonrigden.com/posts/parsing_rss/</link>
+      <pubDate>Sat, 23 Jan 2016 11:38:35 -0700</pubDate>
+      
+      <guid>https://jasonrigden.com/posts/parsing_rss/</guid>
+      <description>There are several option to parse RSS feeds for python. I wrote one of those options.
+pyPodcastParser is a podcast parser. It should parse any XML RSS file, but it specializes in parsing podcast feeds. It does not parse ATOM feeds.
+Featuring  Automated testing with Travis CI 100% test coverage as measured by Coveralls An MIT license Compatibility with python 2 and python 3 Available on pyi Support of RSS 2.</description>
+    </item>
+    
+  </channel>
+</rss>

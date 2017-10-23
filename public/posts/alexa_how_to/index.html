@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="description" content="Independent software developer in Seattle.">
+
+
+<base href="https://jasonrigden.com">
+
+<title>Mr. Rigden&#39;s Blog</title>
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+
+
+
+
+<link href="https://fonts.googleapis.com/css?family=Lato|Roboto|Roboto+Mono:500" rel="stylesheet">
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://jasonrigden.com/css/main.css">
+
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="theme-color" content="#ffffff">
+
+</head>
+<body lang="en-US">
+<div class="container">
+
+
+<header class="row text-left title">
+  <h1 class="title">How to make an Alexa Skill with Python</h1>
+</header>
+<section id="category-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-left meta">
+      Posted by Jason Rigen  on August 5, 2017 
+    </h6>
+      
+      
+      
+
+      
+      
+      <h6  class="text-left meta">File under <a class="meta" href="/categories/tutorial">Tutorial</a></h6>
+      
+      
+      
+
+  </div>
+  
+</section>
+<section id="content-pane" class="row">
+  <div class="col-md-12 text-justify content">
+    
+
+<p>This guide will assume that you have already completed the <a href="https://developer.amazon.com/alexa-skills-kit/alexa-skill-quick-start-tutorial">Alexa Python Tutorial</a> from Amazon. If you have done this then you should have a good handle on how to create new Alexa Skills and Lambda functions. But you probably still have no idea how to write code for an Alexa Skill. The code for “alexa-skills-kit-color-expert-python” is almost unreadable.</p>
+
+<p>This tutorial will show you a template with some nice clean readable code. The full code for this template is on <a href="https://github.com/jrigden/alexa_template">GitHub</a>.</p>
+
+<h3 id="json-everywhere">JSON Everywhere</h3>
+
+<p>Almost everything you will be dealing with is JSON. Check out the “J<a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference">SON Interface Reference for Custom Skills</a>” as a reference. Those JSON objects will be represented by Python dictionaries. You will be seeing many dictionaries within dictionaries.</p>
+
+<h3 id="the-lambda-function">The Lambda Function</h3>
+
+<p>Lambda functions start with <code>lambda_handler</code> function. Think of it like a <code>main()</code>.</p>
+
+<pre name="1caa" id="1caa" class="graf graf--pre graf-after--p">def lambda_handler(event, context):  
+    if event['request']['type'] == "LaunchRequest":  
+        return on_launch(event, context)</pre>
+
+<pre name="377d" id="377d" class="graf graf--pre graf-after--pre">    elif event['request']['type'] == "IntentRequest":  
+        return intent_router(event, context)</pre>
+
+<p>This function is given two arguments: <code>event</code>, <code>context</code>. <code>event</code> is a Python dictionary. First we check <code>event[‘request’][‘type’]</code>to see what type of request we have received. <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/custom-standard-request-types-reference">Standard Request Types</a> can be one of three values:</p>
+
+<ul>
+<li><a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/custom-standard-request-types-reference#launchrequest">LaunchRequest</a></li>
+<li><a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/custom-standard-request-types-reference#intentrequest">IntentRequest</a></li>
+<li><a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/custom-standard-request-types-reference#sessionendedrequest">SessionEndedRequest</a></li>
+</ul>
+
+<h3 id="on-launch">on_launch</h3>
+
+<p>This happens when the skill is invoked with no intent. When called, Alexa will say, “This is the body”. It will also create a card with the title, “This is the title”. In this function we see out first helper function from the template. The <code>statement</code> function.</p>
+
+<pre name="a7d2" id="a7d2" class="graf graf--pre graf-after--p">def on_launch(event, context):  
+    return statement("This is the title", "This is the body")</pre>
+
+<h3 id="statement"><code>statement</code></h3>
+
+<p>This is a simple helper function that builds a response. It takes a <code>title</code> and a <code>body</code>. It uses these to build the <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference#outputspeech-object">spoken output</a> and the <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference#card-object">card output</a>.</p>
+
+<pre name="e62a" id="e62a" class="graf graf--pre graf-after--p">def statement(title, body):  
+    speechlet = {}  
+    speechlet['outputSpeech'] = build_PlainSpeech(body)  
+    speechlet['card'] = build_SimpleCard(title, body)  
+    speechlet['shouldEndSession'] = True  
+    return build_response(speechlet)</pre>
+
+<p>In this function we create a dictionary. Remember, these dictionaries will be turned into JSON objects. We give the key <code>outputSpeech</code> the value returned by <code>build_PlainSpeech</code>. We give the key <code>card</code> the value returned by <code>build_SimpleCard</code>. And we set the key <code>shouldEndSession</code> to <code>True</code>. Then we give that dictionary to <code>build_response</code> and return the result.</p>
+
+<p>Let’s deconstruct some of the functions called here.</p>
+
+<h3 id="build-plainspeech">build_PlainSpeech</h3>
+
+<p>This function builds the <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference#outputspeech-object">OutputSpeech</a> object.</p>
+
+<pre name="e54f" id="e54f" class="graf graf--pre graf-after--p">def build_PlainSpeech(body):  
+    speech = {}  
+    speech['type'] = 'PlainText'  
+    speech['text'] = body  
+    return speech</pre>
+
+<h3 id="build-simplecard">build_SimpleCard</h3>
+
+<p>This function builds the <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference#card-object">Card</a> object. Cards need titles.</p>
+
+<pre name="003a" id="003a" class="graf graf--pre graf-after--p">def build_SimpleCard(title, body):  
+    card = {}  
+    card['type'] = 'Simple'  
+    card['title'] = title  
+    card['content'] = body  
+    return card</pre>
+
+<h3 id="build-response">build_response</h3>
+
+<p>This function builds the <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference#response-body-syntax">Response body</a>.</p>
+
+<pre name="d9f5" id="d9f5" class="graf graf--pre graf-after--p">def build_response(message, session_attributes={}):  
+    response = {}  
+    response['version'] = '1.0'  
+    response['sessionAttributes'] = session_attributes  
+    response['response'] = message  
+    return response</pre>
+
+<h3 id="intent-router">intent_router</h3>
+
+<p>This happens when the skill is invoked with an intent. We need to do another check now. This time we need to route the right intent to the right function. I am assigning <code>event[‘request’][‘intent’][‘name’]</code> to <code>intent</code> just for readability. Those nested dictionaries can get hard to read.</p>
+
+<pre name="67c3" id="67c3" class="graf graf--pre graf-after--p">def intent_router(event, context):  
+    intent = event['request']['intent']['name']</pre>
+
+<pre name="5871" id="5871" class="graf graf--pre graf-after--pre">    # Custom Intents</pre>
+
+<pre name="5ba0" id="5ba0" class="graf graf--pre graf-after--pre">    if intent == "SingIntent":  
+        return sing_intent(event, context)</pre>
+
+<pre name="1405" id="1405" class="graf graf--pre graf-after--pre">    if intent == "TripIntent":  
+        return trip_intent(event, context)</pre>
+
+<pre name="e221" id="e221" class="graf graf--pre graf-after--pre">    if intent == "CounterIntent":  
+        return counter_intent(event, context)</pre>
+
+<pre name="08a2" id="08a2" class="graf graf--pre graf-after--pre">    # Required Intents</pre>
+
+<pre name="1eb8" id="1eb8" class="graf graf--pre graf-after--pre">    if intent == "AMAZON.CancelIntent":  
+        return cancel_intent()</pre>
+
+<pre name="e5ec" id="e5ec" class="graf graf--pre graf-after--pre">    if intent == "AMAZON.HelpIntent":  
+        return help_intent()</pre>
+
+<pre name="59e1" id="59e1" class="graf graf--pre graf-after--pre">    if intent == "AMAZON.StopIntent":  
+        return stop_intent()</pre>
+
+<p>You may have noticed that I skipped over adding intents to the Alexa Skill Kit interface. This is a bit beyond the scope of this tutorial. The Skill Builder is complex. For now just open the Builder’s code editor and paste in the code from <a href="https://github.com/jrigden/alexa_template/blob/master/intents.json">intents.json</a> from the GitHub repo. There are many good guides for the Skill Builder available online.</p>
+
+<p>Let’s talk a look at some of these functions.</p>
+
+<h3 id="sing-intent">sing_intent</h3>
+
+<p>This function gets called when we receive the <code>SingIntent</code>. It uses the <code>statement</code> function from earlier to sing a short song to the user.</p>
+
+<pre name="99f9" id="99f9" class="graf graf--pre graf-after--p">def sing_intent(event, context):  
+    song = "Daisy, Daisy. Give me your answer, do. I'm half crazy all for the love of you"  
+    return statement("daisy_bell_intent", song)</pre>
+
+<h3 id="trip-intent">trip_intent</h3>
+
+<p>This function gets called when we receive the <code>TripIntent</code>. This intent uses the <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/ask-define-the-vui-with-gui#define-dialog">Dialog Model</a>. A dialog helps the collection multipart data by asking follow up questions. We need to return a <a href="http://Delegate%20Directive">Delegate Directive</a> to continue the dialog.</p>
+
+<p>We check the <code>dialogState</code>. If it is <code>STARTED</code> or <code>IN_PROGRESS</code> we call the <code>continue_dialog</code> function. When the <code>dialogState</code> is <code>COMPLETED</code>, we can access the information in the slots.</p>
+
+<pre name="1b45" id="1b45" class="graf graf--pre graf-after--p">def trip_intent(event, context):  
+    dialog_state = event['request']['dialogState']</pre>
+
+<pre name="e570" id="e570" class="graf graf--pre graf-after--pre">    if dialog_state in ("STARTED", "IN_PROGRESS"):  
+        return continue_dialog()</pre>
+
+<pre name="91f8" id="91f8" class="graf graf--pre graf-after--pre">    elif dialog_state == "COMPLETED":  
+        return statement("trip_intent", "Have a good trip")</pre>
+
+<pre name="a3bb" id="a3bb" class="graf graf--pre graf-after--pre">    else:  
+        return statement("trip_intent", "No dialog")</pre>
+
+<h3 id="continue-dialog">continue_dialog</h3>
+
+<p>This function creates and returns a <code>Dialog.Delegate</code>.</p>
+
+<pre name="20a4" id="20a4" class="graf graf--pre graf-after--p">def continue_dialog():  
+    message = {}  
+    message['shouldEndSession'] = False  
+    message['directives'] = [{'type': 'Dialog.Delegate'}]  
+    return build_response(message)</pre>
+
+<h3 id="counter-intent">counter_intent</h3>
+
+<p>This function gets called when we receive the <code>CounterIntent</code>. This function introduces the <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference#session-object">Session object</a> and the template’s <code>conversation</code> function. The session allows us store key value pairs in <code>event[‘session’][‘attributes’]</code> . These key value pairs disappear at the end of a session.</p>
+
+<p>In this function we are incrementing a counter in the session. Then we return the result of template’s <code>conversation</code> function.</p>
+
+<pre name="b02c" id="b02c" class="graf graf--pre graf-after--p">def counter_intent(event, context):  
+    session_attributes = event['session']['attributes']  
+
+    if "counter" in session_attributes:  
+        session_attributes['counter'] += 1  
+
+    else:  
+        session_attributes['counter'] = 1  
+
+    return conversation("counter_intent",  
+                        session_attributes['counter'],  
+                        session_attributes)</pre>
+
+<h3 id="conversation">conversation</h3>
+
+<p>This function is very similar to the <code>statement</code> function. It does two thing differently. First it sets the <code>shouldEndSession</code> to <code>False</code>, because we want to continue the session. It also sends back the session in the response. This maintains the information in the session.</p>
+
+<pre name="df8e" id="df8e" class="graf graf--pre graf-after--p">def conversation(title, body, session_attributes):  
+    speechlet = {}  
+    speechlet['outputSpeech'] = build_PlainSpeech(body)  
+    speechlet['card'] = build_SimpleCard(title, body)  
+    speechlet['shouldEndSession'] = False  
+    return build_response(speechlet,  
+                          session_attributes=session_attributes)</pre>
+
+<h3 id="conclusion"><strong>Conclusion</strong></h3>
+
+<p>I hope you found this useful. Although this was not an complete guide to making Alexa Skill with Python, it should get you started. Go out there and make awesome Alexa Skills! If you publish a skill send it to me. I would love to try it out.</p>
+
+<p>Please send me any questions or suggestions on twitter <a href="https://twitter.com/mr_rigden">@mr_rigden</a></p>
+
+  </div>
+</section>
+<section id="tag-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-left meta">
+      
+      
+      
+      Tags:
+      
+      
+      <a class="meta" href="/tags/alexa">Alexa</a>, 
+      
+      <a class="meta" href="/tags/python">Python</a>
+      
+      
+      
+    </h6>
+
+  </div>
+  
+
+</section>
+
+
+<section id="related-pane" class="">
+  <h3>See Also:</h3>
+  <p>
+  	
+  	<a href="/posts/parsing_rss/">Parsing RSS feeds with Python</a><br>
+  	
+  </p>
+</section>
+
+
+
+
+
+
+
+
+
+
+<section id="menu-pane" class="row menu text-center">
+
+
+  <h4 class="text-center">
+  
+  
+  <span><a href="https://jasonrigden.com/posts/parsing_rss/"><i class="fa fa-arrow-left" aria-hidden="true"></i>Older </a></span>
+  
+  
+  |
+  
+  
+  <span><a href="https://jasonrigden.com/posts/projects/"> Newer <i class="fa fa-arrow-right" aria-hidden="true"></i></a></span>
+  
+  
+  </h4>
+
+
+
+
+
+
+</section>
+
+
+
+
+<h4 class="text-center"><a href="/">About</a> | <a href="/posts">Posts</a> | <a href="/posts/projects/">Projects</a></h4>
+<footer class="row text-center footer">
+  <h4>Mr. Rigden's Blog</h4>
+  
+  <h6 class="text-center copyright"><a href="https://creativecommons.org/licenses/by/4.0/">© 2017 Jason Rigden<br> CC BY 4.0</a></h6>
+  
+  
+</footer>
+
+</div>
+
+
+
+
+
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-108478531-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
+
+
