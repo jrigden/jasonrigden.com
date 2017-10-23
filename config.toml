@@ -1,3 +1,69 @@
-baseURL = "http://example.org/"
-languageCode = "en-us"
-title = "My New Hugo Site"
+## Basic Configuration
+
+baseurl = "https://jasonrigden.com"
+builddrafts = false
+canonifyurls = false
+languageCode = "en-US"
+
+contentdir = "content"
+layoutdir = "layouts"
+publishdir = "public"
+
+author = "Jason Rigden"
+title = "Mr. Rigden's Blog"
+
+theme = "hugo-goa"
+
+## Hugo Built-in Features
+#disqusShortname = "https-shenoybr-github-io-hugo-goa-demo" # Comment out to disable Disqus.
+googleAnalytics = "UA-108478531-1"
+enableRobotsTXT = true
+
+## Site Settings
+[params]
+author = "Jason Rigden"
+intro = "Independent Software Developer"
+description = "<p>You can often find me walking around the streets of Seattle listening to podcasts. I am a fan of the Sounders, D&D, and local beer.</p>"
+authorimage = "me.jpg"
+dateformat = "January 2, 2006"
+custom_css = ["css/my.css"]
+
+## Site Meta Settings
+[params.meta]
+description = "Independent software developer in Seattle."
+keywords = ""
+
+## Social AccountsMr. Rigden's Blog
+[params.social]
+angellist = "mr_rigden"
+facebook = "jason.rigden"
+github = "jrigden"
+instagram = "jasonrigden"
+linkedin = "jasonrigden"
+medium = "@mr_rigden"
+twitter = "mr_rigden"
+
+
+## Extras
+[params.extra]
+copyright = "[© 2017 Jason Rigden<br> CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)"
+poweredby = false
+highlightjs = false
+
+
+## Main Menu
+[[menu.main]]
+    name = "blog"
+    weight = 100
+    identifier = "blog"
+    url = "/blog/"
+[[menu.main]]
+    name = "about"
+    identifier = "about"
+    weight = 200
+    url = "/about/"
+[[menu.main]]
+    name = "coderag"
+    identifier = "coderag"
+    weight = 300
+    url = "/coderag/"
